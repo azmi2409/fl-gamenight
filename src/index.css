@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+  --color-border: hsl(220 13% 18%);
+  --color-input: hsl(220 13% 18%);
+  --color-ring: hsl(45 93% 58%);
+  --color-background: hsl(222 47% 6%);
+  --color-foreground: hsl(210 40% 96%);
+  --color-card: hsl(222 30% 10%);
+  --color-card-foreground: hsl(210 40% 96%);
+  --color-primary: hsl(45 93% 58%);
+  --color-primary-foreground: hsl(222 47% 6%);
+  --color-secondary: hsl(175 80% 45%);
+  --color-secondary-foreground: hsl(222 47% 6%);
+  --color-muted: hsl(220 13% 14%);
+  --color-muted-foreground: hsl(215 20% 55%);
+  --color-accent: hsl(220 13% 14%);
+  --color-accent-foreground: hsl(210 40% 96%);
+  --color-destructive: hsl(0 72% 51%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Animations */
+@keyframes float-up {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(1.2); }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 hsl(45 93% 58% / 0.4); }
+  70% { box-shadow: 0 0 0 10px hsl(45 93% 58% / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(45 93% 58% / 0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+@keyframes countdown-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes reveal {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px hsl(45 93% 58% / 0.3); }
+  50% { box-shadow: 0 0 20px hsl(45 93% 58% / 0.5), 0 0 40px hsl(45 93% 58% / 0.2); }
+}
+
+.animate-float-up {
+  animation: float-up 1s ease-out forwards;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s ease-in-out infinite;
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+.animate-countdown-pulse {
+  animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+.animate-reveal {
+  animation: reveal 0.4s ease-out forwards;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(220 13% 25%);
+  border-radius: 3px;
+}
