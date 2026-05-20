@@ -3,6 +3,9 @@ import type { Player, Action } from '../types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { RotateCcw } from 'lucide-react';
+import finalPodiumStage from '../assets/results/final-podium-stage.png';
+import confettiOverlay from '../assets/results/confetti-overlay.png';
+import oneBrainCellBadge from '../assets/results/one-brain-cell-badge.png';
 
 export function ResultsScreen({ players, dispatch }: { players: Player[]; dispatch: React.Dispatch<Action> }) {
   const [revealed, setRevealed] = useState(0);
@@ -17,8 +20,12 @@ export function ResultsScreen({ players, dispatch }: { players: Player[]; dispat
   const medals = ['🥇', '🥈', '🥉'];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[85vh] px-6 py-12">
-      <h1 className="text-5xl md:text-6xl font-black mb-12 text-foreground">FINAL RESULTS</h1>
+    <div className="relative flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-6 py-12">
+      <img src={finalPodiumStage} alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+      <img src={confettiOverlay} alt="" className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-70" />
+      <div className="absolute inset-0 bg-background/55" />
+      <div className="relative z-10 flex flex-col items-center">
+      <h1 className="text-5xl md:text-6xl font-black mb-12 text-foreground drop-shadow-xl">FINAL RESULTS</h1>
 
       {/* Podium */}
       <div className="flex items-end gap-4 mb-10">
@@ -49,7 +56,12 @@ export function ResultsScreen({ players, dispatch }: { players: Player[]; dispat
                 <p className="text-xs text-muted-foreground">#{i + 4}</p>
                 <p className="font-bold">{p.name}</p>
                 <p className="text-lg font-black tabular-nums text-muted-foreground">{p.score}</p>
-                {isLast && <p className="text-xs mt-1 text-muted-foreground">Brain Cell Count: 1</p>}
+                {isLast && (
+                  <div className="mt-2 flex flex-col items-center gap-1">
+                    <img src={oneBrainCellBadge} alt="One brain cell badge" className="h-14 w-14 object-contain" />
+                    <p className="text-xs text-muted-foreground">Brain Cell Count: 1</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           );
@@ -59,6 +71,7 @@ export function ResultsScreen({ players, dispatch }: { players: Player[]; dispat
       <Button variant="glow" size="xl" onClick={() => dispatch({ type: 'RESET' })} className="font-black">
         <RotateCcw size={18} /> Play Again
       </Button>
+      </div>
     </div>
   );
 }

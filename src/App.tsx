@@ -10,6 +10,8 @@ import { PatternBlackout } from './components/PatternBlackout';
 import { ResultsScreen } from './components/ResultsScreen';
 import { GameTransition } from './components/GameTransition';
 import { RulesModal } from './components/RulesModal';
+import mainStageBg from './assets/backgrounds/main-stage-bg.png';
+import subtleGridOverlay from './assets/backgrounds/subtle-grid-overlay.png';
 
 const STORAGE_KEY = 'zoom-brain-battle-state';
 
@@ -133,7 +135,17 @@ function App() {
   const sortedPlayers = [...state.players].sort((a, b) => b.score - a.score);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${mainStageBg})` }}
+      />
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 bg-cover bg-center opacity-35 mix-blend-screen"
+        style={{ backgroundImage: `url(${subtleGridOverlay})` }}
+      />
       {state.screen !== 'setup' && state.screen !== 'transition' && (
         <Scoreboard
           players={state.players}
@@ -144,7 +156,7 @@ function App() {
         />
       )}
 
-      <div className={state.screen !== 'setup' && state.screen !== 'transition' ? 'pt-14' : ''}>
+      <div className={`relative z-10 ${state.screen !== 'setup' && state.screen !== 'transition' ? 'pt-14' : ''}`}>
         {state.screen === 'setup' && <SetupScreen dispatch={dispatch} />}
         {state.screen === 'game1' && <PatternBreaker state={state} dispatch={dispatch} />}
         {state.screen === 'game2' && <CategoryClash state={state} dispatch={dispatch} />}

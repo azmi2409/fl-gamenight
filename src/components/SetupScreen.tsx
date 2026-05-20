@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Plus, X, Zap } from 'lucide-react';
+import brainBattleWordmark from '../assets/brand/brain-battle-wordmark.png';
+import hostMascot from '../assets/stickers/host-mascot.png';
 
 export function SetupScreen({ dispatch }: { dispatch: React.Dispatch<Action> }) {
   const [names, setNames] = useState<string[]>(['', '', '', '', '', '']);
@@ -21,12 +23,18 @@ export function SetupScreen({ dispatch }: { dispatch: React.Dispatch<Action> }) 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8">
-      <div className="text-center mb-10">
-        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-3">
-          <span className="text-primary">BRAIN</span>{' '}
-          <span className="text-foreground">BATTLE</span>
-        </h1>
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-8">
+      <img
+        src={hostMascot}
+        alt="FutureLab Brain Battle host mascot"
+        className="pointer-events-none absolute right-8 top-10 hidden w-44 drop-shadow-2xl xl:block"
+      />
+      <div className="mb-10 text-center">
+        <img
+          src={brainBattleWordmark}
+          alt="FL Brain Battle"
+          className="mx-auto mb-4 max-h-36 w-auto max-w-3xl drop-shadow-2xl"
+        />
         <p className="text-lg text-muted-foreground">{names.length} Players · 5 Games · 1 Winner</p>
       </div>
 

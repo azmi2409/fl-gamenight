@@ -2,14 +2,18 @@ import { useEffect, useState } from 'react';
 import type { Player, ScoreEvent } from '../types';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Trophy, BookOpen, Crown, RotateCcw, TriangleAlert } from 'lucide-react';
+import { Trophy, BookOpen, RotateCcw, TriangleAlert } from 'lucide-react';
+import brainBattleMark from '../assets/brand/brain-battle-mark.png';
+import leaderCrown from '../assets/stickers/leader-crown.png';
+import scoreBurst from '../assets/stickers/score-burst.png';
 
 function ScorePopup({ event }: { event: ScoreEvent }) {
   const [visible, setVisible] = useState(true);
   useEffect(() => { const t = setTimeout(() => setVisible(false), 1000); return () => clearTimeout(t); }, []);
   if (!visible) return null;
   return (
-    <span className={`absolute -top-3 right-0 text-sm font-black animate-float-up ${event.delta > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+    <span className={`absolute -top-3 right-0 flex items-center gap-0.5 text-sm font-black animate-float-up ${event.delta > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+      {event.delta > 0 && <img src={scoreBurst} alt="" className="h-5 w-5 object-contain" />}
       {event.delta > 0 ? `+${event.delta}` : event.delta}
     </span>
   );
@@ -38,13 +42,14 @@ export function Scoreboard({
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-md border-b border-border h-12 flex items-center px-4">
+        <img src={brainBattleMark} alt="FL Brain Battle" className="mr-3 h-8 w-8 object-contain" />
         <div className="flex items-center gap-2 flex-1 overflow-x-auto">
           {players.map((p) => {
             const isLeader = p.id === leaderId;
             const playerEvents = recentEvents.filter((e) => e.playerId === p.id);
-            return (
-              <div key={p.id} className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs whitespace-nowrap transition-all ${isLeader ? 'bg-primary/10 ring-1 ring-primary/30' : ''}`}>
-                {isLeader && <Crown size={12} className="text-primary" />}
+              return (
+                <div key={p.id} className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs whitespace-nowrap transition-all ${isLeader ? 'bg-primary/10 ring-1 ring-primary/30' : ''}`}>
+                {isLeader && <img src={leaderCrown} alt="Leader" className="h-5 w-5 object-contain" />}
                 <span className="font-medium text-muted-foreground">{p.name}</span>
                 <span className="font-black text-foreground tabular-nums">{p.score}</span>
                 {playerEvents.map((e) => <ScorePopup key={e.id} event={e} />)}
