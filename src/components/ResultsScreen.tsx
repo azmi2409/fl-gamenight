@@ -6,6 +6,7 @@ import { RotateCcw } from 'lucide-react';
 import finalPodiumStage from '../assets/results/final-podium-stage.png';
 import confettiOverlay from '../assets/results/confetti-overlay.png';
 import oneBrainCellBadge from '../assets/results/one-brain-cell-badge.png';
+import itIsWhatItIs from '../assets/memes/is-it-what-is-it-doggy.jpg';
 
 export function ResultsScreen({ players, dispatch }: { players: Player[]; dispatch: React.Dispatch<Action> }) {
   const [revealed, setRevealed] = useState(0);
@@ -58,6 +59,7 @@ export function ResultsScreen({ players, dispatch }: { players: Player[]; dispat
                 <p className="text-lg font-black tabular-nums text-muted-foreground">{p.score}</p>
                 {isLast && (
                   <div className="mt-2 flex flex-col items-center gap-1">
+                    <img src={itIsWhatItIs} alt="" className="h-40 w-auto rounded-2xl object-cover" />
                     <img src={oneBrainCellBadge} alt="One brain cell badge" className="h-14 w-14 object-contain" />
                     <p className="text-xs text-muted-foreground">Brain Cell Count: 1</p>
                   </div>

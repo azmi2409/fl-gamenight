@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ChevronRight, Play, Square, Calculator } from 'lucide-react';
 import timerPanic from '../assets/stickers/timer-panic.png';
+import sweatingPanic from '../assets/memes/sweating-panic.jpg';
 
 export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: React.Dispatch<Action> }) {
   const round = categoryClashRounds[state.currentRound];
@@ -78,8 +79,11 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
 
       {state.g2TimerActive && (
         <div className="flex flex-col items-center mb-6">
-          {timeLeft <= 5 && (
-            <img src={timerPanic} alt="Timer warning" className="mb-2 h-20 w-20 animate-countdown-pulse object-contain" />
+          {timeLeft <= 15 && (
+            <div className="mb-2 flex items-center gap-3">
+              <img src={timerPanic} alt="Timer warning" className="h-32 w-32 animate-countdown-pulse object-contain" />
+              <img src={sweatingPanic} alt="" className="h-52 w-auto rounded-2xl object-cover animate-countdown-pulse" />
+            </div>
           )}
           <div className={`text-6xl font-black tabular-nums mb-4 transition-colors ${timeLeft <= 0 ? 'text-destructive animate-countdown-pulse' : timeLeft <= 5 ? 'text-destructive animate-countdown-pulse' : timeLeft <= 10 ? 'text-amber-600' : 'text-secondary'}`}>
             {timeLeft <= 0 ? '0' : timeLeft}s

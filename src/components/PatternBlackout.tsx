@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Eye, EyeOff, Zap } from 'lucide-react';
+import brainBuffering from '../assets/memes/brain-buffering.jpg';
 
 export function PatternBlackout({ state, dispatch }: { state: AppState; dispatch: React.Dispatch<Action> }) {
   const round = patternBlackoutRounds[state.currentRound];
@@ -62,6 +63,7 @@ export function PatternBlackout({ state, dispatch }: { state: AppState; dispatch
 
       {!state.g5GridVisible && question && (
         <>
+          <img src={brainBuffering} alt="" className="mb-4 h-56 w-auto rounded-2xl object-cover opacity-90" />
           <Card className="mb-6 w-full max-w-3xl bg-muted/30">
             <CardContent className="p-8 text-center">
               <p className="text-xs text-muted-foreground mb-2">Question {state.g5QuestionIndex + 1}/{round.questions.length}</p>

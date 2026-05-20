@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Eye, Link } from 'lucide-react';
+import conspiracyBoard from '../assets/memes/conspiracy-board.jpg';
 
 export function MissingLink({ state, dispatch }: { state: AppState; dispatch: React.Dispatch<Action> }) {
   const round = missingLinkRounds[state.currentRound];
@@ -45,9 +46,12 @@ export function MissingLink({ state, dispatch }: { state: AppState; dispatch: Re
       )}
 
       {!state.answerRevealed && (
-        <Button variant="default" size="lg" onClick={() => dispatch({ type: 'REVEAL_ANSWER' })} className="mb-6">
-          <Eye size={18} /> Reveal Connection
-        </Button>
+        <>
+          <img src={conspiracyBoard} alt="" className="mb-4 h-56 w-auto rounded-2xl object-cover opacity-90" />
+          <Button variant="default" size="lg" onClick={() => dispatch({ type: 'REVEAL_ANSWER' })} className="mb-6">
+            <Eye size={18} /> Reveal Connection
+          </Button>
+        </>
       )}
 
       {state.answerRevealed && (

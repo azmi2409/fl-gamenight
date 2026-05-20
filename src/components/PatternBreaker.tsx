@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Eye, XCircle } from 'lucide-react';
-import wrongBuzzer from '../assets/stickers/wrong-buzzer.png';
+import galaxyBrain from '../assets/memes/galaxy-brain.jpg';
+import mathLady from '../assets/memes/math-lady.jpg';
+import emotionalDamage from '../assets/memes/emotional-damage.jpg';
 
 export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch: React.Dispatch<Action> }) {
   const round = patternBreakerRounds[state.currentRound];
@@ -32,11 +34,18 @@ export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch:
         </CardContent>
       </Card>
 
+      {!state.answerRevealed && (
+        <img src={mathLady} alt="" className="mb-4 h-48 w-auto rounded-2xl object-contain opacity-90" />
+      )}
+
       {state.answerRevealed && (
         <Card className="mb-6 bg-secondary/10 border-secondary/40 animate-reveal">
-          <CardContent className="p-5 text-center">
-            <p className="text-3xl font-black text-emerald-400">{round.answer}</p>
-            <p className="text-sm text-muted-foreground mt-1">Hint: {round.hint}</p>
+          <CardContent className="p-5 text-center flex items-center justify-center gap-4">
+            <img src={galaxyBrain} alt="" className="h-40 w-auto rounded-2xl object-cover" />
+            <div>
+              <p className="text-3xl font-black text-emerald-400">{round.answer}</p>
+              <p className="text-sm text-muted-foreground mt-1">Hint: {round.hint}</p>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -70,7 +79,7 @@ export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch:
         <div className="flex gap-2 justify-center flex-wrap">
           {state.players.map((p) => (
             <Button key={`w-${p.id}`} variant="destructive" size="sm" onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: -2 })}>
-              <img src={wrongBuzzer} alt="" className="h-4 w-4 object-contain" />
+              <img src={emotionalDamage} alt="" className="h-6 w-auto rounded-sm object-cover" />
               <XCircle size={14} /> {p.name} -2
             </Button>
           ))}

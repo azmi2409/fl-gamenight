@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Eye, Flame } from 'lucide-react';
+import waitWhat from '../assets/memes/wait-what.jpg';
 
 const difficultyConfig = {
   easy: { label: 'Easy', points: 3, variant: 'success' as const },
@@ -55,7 +56,8 @@ export function KnowledgeDuel({ state, dispatch }: { state: AppState; dispatch: 
 
       {state.answerRevealed && (
         <Card className="mb-6 bg-secondary/10 border-secondary/40 animate-reveal">
-          <CardContent className="p-5 text-center">
+          <CardContent className="p-5 text-center flex items-center justify-center gap-4">
+            {question.difficulty === 'hard' && <img src={waitWhat} alt="" className="h-40 w-auto rounded-2xl object-cover" />}
             <p className="text-3xl font-black text-emerald-400">{question.a}</p>
           </CardContent>
         </Card>
