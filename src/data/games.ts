@@ -21,9 +21,9 @@ export const categoryClashRounds = [
 export const missingLinkRounds = [
   { items: ['🍢 Satay', '🍛 Rendang', '🍜 Laksa'], connection: 'Iconic Southeast Asian dishes', type: 'normal' as const },
   { items: ['🇲🇾 Tunku Abdul Rahman', '🇮🇩 Sukarno', '🇸🇬 Lee Kuan Yew'], connection: 'Founding-era national leaders in Southeast Asia', type: 'normal' as const },
-  { items: ['📈 ARR', '📉 Churn', '💸 CAC'], connection: 'SaaS business metrics', type: 'normal' as const },
-  { items: ['🧠 RAG', '🔎 Embeddings', '🗄️ Vector database'], connection: 'AI retrieval stack', type: 'normal' as const },
-  { items: ['侘寂 Wabi-sabi', '物の哀れ Mono no aware', '改善 Kaizen'], connection: 'Japanese cultural/philosophical concepts', type: 'reverse' as const },
+  { items: ['⚽ Football', '🏀 Basketball', '🏸 Badminton'], connection: 'Popular sports', type: 'normal' as const },
+  { items: ['🍕 Pizza', '🍔 Burger', '🌮 Taco'], connection: 'Fast food dishes', type: 'normal' as const },
+  { items: ['🟢 Green means go', '🛑 Red means stop', '🟡 ?'], connection: 'Traffic light meanings', type: 'reverse' as const },
   { items: ['🇲🇾 Kuala Lumpur', '🇮🇩 Jakarta', '?'], connection: 'Bandar Seri Begawan → Southeast Asian capitals', type: 'missing' as const },
 ];
 
