@@ -11,38 +11,38 @@ export const patternBreakerRounds = [
 
 export const categoryClashRounds = [
   { category: 'Animals 🐾', letter: 'C' },
-  { category: 'Countries 🌍', letter: 'B' },
-  { category: 'Foods 🍜', letter: 'P' },
+  { category: 'Countries 🌍', letter: 'C' },
+  { category: 'Foods 🍕', letter: 'P' },
   { category: 'Movies 🎬', letter: 'S' },
+  { category: 'Brands 🛍️', letter: 'A' },
   { category: 'Famous People 🌟', letter: 'M' },
-  { category: 'Songs 🎵', letter: 'L' },
 ];
 
 export const missingLinkRounds = [
-  { items: ['🦁 Lion', '🐯 Tiger', '🐆 Leopard'], connection: 'Big cats', type: 'normal' as const },
-  { items: ['🪐 Mercury', '🪐 Venus', '🌍 Earth'], connection: 'First three planets from the Sun', type: 'normal' as const },
-  { items: ['♜ Rook', '♝ Bishop', '♞ Knight'], connection: 'Chess pieces', type: 'normal' as const },
-  { items: ['🌊 Amazon', '🌊 Nile', '🌊 Yangtze'], connection: 'Longest rivers', type: 'normal' as const },
-  { items: ['🎨 Picasso', '🎨 Dali', '🎨 Goya'], connection: 'Spanish artists', type: 'reverse' as const },
-  { items: ['⚙️ Iron', '🪙 Copper', '?'], connection: 'Zinc → Metals / chemical elements', type: 'missing' as const },
+  { items: ['🍢 Satay', '🍛 Rendang', '🍜 Laksa'], connection: 'Iconic Southeast Asian dishes', type: 'normal' as const },
+  { items: ['🇲🇾 Tunku Abdul Rahman', '🇮🇩 Sukarno', '🇸🇬 Lee Kuan Yew'], connection: 'Founding-era national leaders in Southeast Asia', type: 'normal' as const },
+  { items: ['📈 ARR', '📉 Churn', '💸 CAC'], connection: 'SaaS business metrics', type: 'normal' as const },
+  { items: ['🧠 RAG', '🔎 Embeddings', '🗄️ Vector database'], connection: 'AI retrieval stack', type: 'normal' as const },
+  { items: ['侘寂 Wabi-sabi', '物の哀れ Mono no aware', '改善 Kaizen'], connection: 'Japanese cultural/philosophical concepts', type: 'reverse' as const },
+  { items: ['🇲🇾 Kuala Lumpur', '🇮🇩 Jakarta', '?'], connection: 'Bandar Seri Begawan → Southeast Asian capitals', type: 'missing' as const },
 ];
 
 export const knowledgeDuelQuestions = [
-  { q: '🧴 What is the largest organ in the human body?', a: 'Skin', difficulty: 'easy' as const },
-  { q: '🇦🇺 What is the capital city of Australia?', a: 'Canberra', difficulty: 'easy' as const },
-  { q: '🧂 Which chemical element has the symbol Na?', a: 'Sodium', difficulty: 'easy' as const },
-  { q: '🌊 Which ocean lies between Africa and Australia?', a: 'Indian Ocean', difficulty: 'easy' as const },
-  { q: '📚 Who wrote Pride and Prejudice?', a: 'Jane Austen', difficulty: 'easy' as const },
-  { q: '🖼️ Who painted the Mona Lisa?', a: 'Leonardo da Vinci', difficulty: 'medium' as const },
-  { q: '❄️ What is the largest desert in the world?', a: 'Antarctica', difficulty: 'medium' as const },
-  { q: '🩸 Which blood type is known as the universal donor?', a: 'O negative', difficulty: 'medium' as const },
-  { q: '🌐 What does HTTP stand for?', a: 'HyperText Transfer Protocol', difficulty: 'medium' as const },
-  { q: '🕒 How many time zones does Russia have?', a: '11', difficulty: 'medium' as const },
-  { q: '📱 In what year was the first iPhone released?', a: '2007', difficulty: 'hard' as const },
-  { q: '🌍 Which is the only continent located in all four hemispheres?', a: 'Africa', difficulty: 'hard' as const },
-  { q: '🔎 Which company was originally called "BackRub"?', a: 'Google', difficulty: 'hard' as const },
-  { q: '🧪 Which element has atomic number 79?', a: 'Gold (Au)', difficulty: 'hard' as const },
-  { q: '🇻🇦 What is the smallest country in the world by area?', a: 'Vatican City', difficulty: 'hard' as const },
+  { q: '🇸🇬 Singapore left Malaysia and became fully independent in what year?', a: '1965', difficulty: 'easy' as const },
+  { q: '🇮🇩 Indonesia’s motto “Bhinneka Tunggal Ika” is usually translated as what?', a: 'Unity in Diversity', difficulty: 'easy' as const },
+  { q: '🌊 Which strait forms the historic sea lane between Peninsular Malaysia and Sumatra?', a: 'Strait of Malacca', difficulty: 'easy' as const },
+  { q: '📈 In SaaS, what does MRR stand for?', a: 'Monthly Recurring Revenue', difficulty: 'easy' as const },
+  { q: '🤖 In modern AI, what does LLM stand for?', a: 'Large Language Model', difficulty: 'easy' as const },
+  { q: '🇧🇳 Brunei shares the island of Borneo with which two countries?', a: 'Malaysia and Indonesia', difficulty: 'medium' as const },
+  { q: '🚕 Which Southeast Asian superapp began in Malaysia as MyTeksi?', a: 'Grab', difficulty: 'medium' as const },
+  { q: '🇮🇩 The 2021 merger of Gojek and Tokopedia created which Indonesian tech group?', a: 'GoTo Group', difficulty: 'medium' as const },
+  { q: '🏛️ Which two Malaysian cities are jointly listed by UNESCO as the Historic Cities of the Straits of Malacca?', a: 'Melaka and George Town', difficulty: 'medium' as const },
+  { q: '🧠 What is the common term for when an AI model confidently produces false information?', a: 'Hallucination', difficulty: 'medium' as const },
+  { q: '⚓ Portuguese forces captured the Malacca Sultanate’s capital in what year?', a: '1511', difficulty: 'hard' as const },
+  { q: '🇫🇷 The French Revolution began in what year?', a: '1789', difficulty: 'hard' as const },
+  { q: '🕊️ World War I began in what year?', a: '1914', difficulty: 'hard' as const },
+  { q: '🧱 The Berlin Wall fell in what year?', a: '1989', difficulty: 'hard' as const },
+  { q: '🏰 The Byzantine Empire’s capital, Constantinople, fell to which empire in 1453?', a: 'Ottoman Empire', difficulty: 'hard' as const },
 ];
 
 export const patternBlackoutRounds = [
@@ -65,14 +65,14 @@ export const patternBlackoutRounds = [
     type: 'logic' as const,
     grid: [
       ['1', '4', '9', '16'],
+      ['2', '5', '10', '17'],
       ['3', '6', '?', '18'],
-      ['5', '8', '15', '24'],
-      ['7', '10', '17', '28'],
+      ['4', '7', '12', '19'],
     ],
     questions: [
-      { q: '❓ What number replaces ?', a: '12' },
-      { q: '🧠 What is the pattern in row 1?', a: 'Perfect squares: 1², 2², 3², 4²' },
-      { q: '📈 What is the pattern in column 1?', a: 'Odd numbers increasing by +2' },
+      { q: '❓ What number replaces ?', a: '11' },
+      { q: '🧠 What is the left-to-right pattern in each row?', a: 'Add +3, then +5, then +7' },
+      { q: '📈 What is the top-to-bottom pattern in each column?', a: 'Each column increases by +1' },
     ],
   },
   {
