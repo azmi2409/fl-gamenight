@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --color-border: hsl(220 13% 18%);
-  --color-input: hsl(220 13% 18%);
-  --color-ring: hsl(45 93% 58%);
-  --color-background: hsl(222 47% 6%);
-  --color-foreground: hsl(210 40% 96%);
-  --color-card: hsl(222 30% 10%);
-  --color-card-foreground: hsl(210 40% 96%);
-  --color-primary: hsl(45 93% 58%);
-  --color-primary-foreground: hsl(222 47% 6%);
-  --color-secondary: hsl(175 80% 45%);
-  --color-secondary-foreground: hsl(222 47% 6%);
-  --color-muted: hsl(220 13% 14%);
-  --color-muted-foreground: hsl(215 20% 55%);
-  --color-accent: hsl(220 13% 14%);
-  --color-accent-foreground: hsl(210 40% 96%);
+  --color-border: hsl(210 20% 85%);
+  --color-input: hsl(210 20% 90%);
+  --color-ring: hsl(190 70% 42%);
+  --color-background: hsl(210 30% 97%);
+  --color-foreground: hsl(220 40% 13%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(220 40% 13%);
+  --color-primary: hsl(195 75% 40%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(160 55% 45%);
+  --color-secondary-foreground: hsl(0 0% 100%);
+  --color-muted: hsl(210 20% 93%);
+  --color-muted-foreground: hsl(215 15% 45%);
+  --color-accent: hsl(15 85% 55%);
+  --color-accent-foreground: hsl(0 0% 100%);
   --color-destructive: hsl(0 72% 51%);
   --color-destructive-foreground: hsl(0 0% 100%);
 }
@@ -36,9 +36,9 @@ body {
 }
 
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 hsl(45 93% 58% / 0.4); }
-  70% { box-shadow: 0 0 0 10px hsl(45 93% 58% / 0); }
-  100% { box-shadow: 0 0 0 0 hsl(45 93% 58% / 0); }
+  0% { box-shadow: 0 0 0 0 hsl(195 75% 40% / 0.4); }
+  70% { box-shadow: 0 0 0 10px hsl(195 75% 40% / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(195 75% 40% / 0); }
 }
 
 @keyframes shake {
@@ -60,8 +60,8 @@ body {
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px hsl(45 93% 58% / 0.3); }
-  50% { box-shadow: 0 0 20px hsl(45 93% 58% / 0.5), 0 0 40px hsl(45 93% 58% / 0.2); }
+  0%, 100% { box-shadow: 0 0 5px hsl(195 75% 40% / 0.3); }
+  50% { box-shadow: 0 0 20px hsl(195 75% 40% / 0.5), 0 0 40px hsl(195 75% 40% / 0.2); }
 }
 
 .animate-float-up {
@@ -96,6 +96,6 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(220 13% 25%);
+  background: hsl(210 20% 75%);
   border-radius: 3px;
 }

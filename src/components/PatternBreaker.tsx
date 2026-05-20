@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Eye, XCircle } from 'lucide-react';
+import wrongBuzzer from '../assets/stickers/wrong-buzzer.png';
 
 export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch: React.Dispatch<Action> }) {
   const round = patternBreakerRounds[state.currentRound];
@@ -32,7 +33,7 @@ export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch:
       </Card>
 
       {state.answerRevealed && (
-        <Card className="mb-6 bg-emerald-950/30 border-emerald-500/30 animate-reveal">
+        <Card className="mb-6 bg-secondary/10 border-secondary/40 animate-reveal">
           <CardContent className="p-5 text-center">
             <p className="text-3xl font-black text-emerald-400">{round.answer}</p>
             <p className="text-sm text-muted-foreground mt-1">Hint: {round.hint}</p>
@@ -69,6 +70,7 @@ export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch:
         <div className="flex gap-2 justify-center flex-wrap">
           {state.players.map((p) => (
             <Button key={`w-${p.id}`} variant="destructive" size="sm" onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: -2 })}>
+              <img src={wrongBuzzer} alt="" className="h-4 w-4 object-contain" />
               <XCircle size={14} /> {p.name} -2
             </Button>
           ))}

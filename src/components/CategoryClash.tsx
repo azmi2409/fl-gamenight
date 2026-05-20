@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ChevronRight, Play, Square, Calculator } from 'lucide-react';
+import timerPanic from '../assets/stickers/timer-panic.png';
 
 export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: React.Dispatch<Action> }) {
   const round = categoryClashRounds[state.currentRound];
@@ -77,7 +78,10 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
 
       {state.g2TimerActive && (
         <div className="flex flex-col items-center mb-6">
-          <div className={`text-6xl font-black tabular-nums mb-4 transition-colors ${timeLeft <= 0 ? 'text-destructive animate-countdown-pulse' : timeLeft <= 5 ? 'text-destructive animate-countdown-pulse' : timeLeft <= 10 ? 'text-amber-400' : 'text-secondary'}`}>
+          {timeLeft <= 5 && (
+            <img src={timerPanic} alt="Timer warning" className="mb-2 h-20 w-20 animate-countdown-pulse object-contain" />
+          )}
+          <div className={`text-6xl font-black tabular-nums mb-4 transition-colors ${timeLeft <= 0 ? 'text-destructive animate-countdown-pulse' : timeLeft <= 5 ? 'text-destructive animate-countdown-pulse' : timeLeft <= 10 ? 'text-amber-600' : 'text-secondary'}`}>
             {timeLeft <= 0 ? '0' : timeLeft}s
           </div>
           <Button variant="destructive" size="default" onClick={() => dispatch({ type: 'G2_END_TIMER' })}>
@@ -126,7 +130,7 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
                       {answers.map((a, i) => {
                         const isDuplicate = answerCounts[a.toLowerCase().trim()] > 1;
                         return (
-                          <div key={i} className={`text-xs px-2 py-0.5 rounded ${isDuplicate ? 'text-red-400 line-through bg-red-500/10' : 'text-emerald-400 bg-emerald-500/10'}`}>
+                          <div key={i} className={'text-xs px-2 py-0.5 rounded ' + (isDuplicate ? 'text-red-600 line-through bg-red-500/10' : 'text-secondary bg-secondary/10')}>
                             {a}
                           </div>
                         );

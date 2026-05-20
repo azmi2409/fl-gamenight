@@ -54,7 +54,7 @@ export function KnowledgeDuel({ state, dispatch }: { state: AppState; dispatch: 
       )}
 
       {state.answerRevealed && (
-        <Card className="mb-6 bg-emerald-950/30 border-emerald-500/30 animate-reveal">
+        <Card className="mb-6 bg-secondary/10 border-secondary/40 animate-reveal">
           <CardContent className="p-5 text-center">
             <p className="text-3xl font-black text-emerald-400">{question.a}</p>
           </CardContent>
@@ -66,7 +66,7 @@ export function KnowledgeDuel({ state, dispatch }: { state: AppState; dispatch: 
         <div className="flex gap-2 justify-center flex-wrap">
           {state.players.map((p) => (
             <Button key={p.id} variant="outline" size="default" onClick={() => handleCorrect(p.id)}>
-              {p.name} {p.streak >= 2 && <span className="text-amber-400 flex items-center gap-0.5"><Flame size={12} />{p.streak}</span>}
+              {p.name} {p.streak >= 2 && <span className="text-amber-600 flex items-center gap-0.5"><Flame size={12} />{p.streak}</span>}
             </Button>
           ))}
         </div>

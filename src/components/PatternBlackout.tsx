@@ -76,7 +76,7 @@ export function PatternBlackout({ state, dispatch }: { state: AppState; dispatch
           )}
 
           {state.answerRevealed && (
-            <Card className="mb-6 bg-emerald-950/30 border-emerald-500/30 animate-reveal">
+            <Card className="mb-6 bg-secondary/10 border-secondary/40 animate-reveal">
               <CardContent className="p-5 text-center">
                 <p className="text-2xl font-black text-emerald-400">{question.a}</p>
               </CardContent>
