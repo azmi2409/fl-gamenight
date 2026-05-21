@@ -8,6 +8,9 @@ import conspiracyBoard from '../assets/memes/conspiracy-board.jpg';
 
 export function MissingLink({ state, dispatch }: { state: AppState; dispatch: React.Dispatch<Action> }) {
   const round = missingLinkRounds[state.currentRound];
+  const firstAwardKey = `g3-r${state.currentRound}-first`;
+  const hasFirstWinner = state.usedAwardKeys.includes(firstAwardKey);
+  const getCorrectKey = (playerId: number) => `g3-r${state.currentRound}-correct-${playerId}`;
   if (!round) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] animate-reveal">
@@ -66,18 +69,24 @@ export function MissingLink({ state, dispatch }: { state: AppState; dispatch: Re
       <div className="w-full max-w-3xl space-y-3">
         <p className="text-center text-xs text-muted-foreground">Correct = +4 · First to answer = +2 bonus</p>
         <div className="flex gap-2 justify-center flex-wrap">
-          {state.players.map((p) => (
-            <Button key={p.id} variant="outline" size="default" onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: 4 })}>
-              {p.name} +4
-            </Button>
-          ))}
+          {state.players.map((p) => {
+            const correctKey = getCorrectKey(p.id);
+            const used = state.usedAwardKeys.includes(correctKey);
+            return (
+              <Button key={p.id} variant="outline" size="default" disabled={used} onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: 4, awardKey: correctKey })}>
+                {used ? `${p.name} Added` : `${p.name} +4`}
+              </Button>
+            );
+          })}
         </div>
         <div className="flex gap-2 justify-center flex-wrap">
-          {state.players.map((p) => (
-            <Button key={`b-${p.id}`} variant="ghost" size="sm" onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: 2 })} className="text-primary">
-              {p.name} 1st (+2)
-            </Button>
-          ))}
+          {state.players.map((p) => {
+            return (
+              <Button key={`b-${p.id}`} variant="ghost" size="sm" disabled={hasFirstWinner} onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: 2, awardKey: firstAwardKey })} className="text-primary">
+                {hasFirstWinner ? `${p.name} 1st Locked` : `${p.name} 1st (+2)`}
+              </Button>
+            );
+          })}
         </div>
         <div className="flex justify-center pt-2">
           <Button variant="ghost" size="lg" onClick={() => dispatch({ type: 'NEXT_ROUND' })}>Next Round <ChevronRight size={18} /></Button>

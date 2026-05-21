@@ -20,6 +20,7 @@ export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch:
   }
 
   const placementLabels = ['1st +5', '2nd +3', '3rd +1'];
+  const getWrongKey = (playerId: number) => `g1-r${state.currentRound}-wrong-${playerId}`;
 
   return (
     <div className="flex flex-col items-center px-6 py-8 animate-reveal">
@@ -61,6 +62,7 @@ export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch:
           {state.players.map((p) => {
             const alreadyPlaced = state.g1Placements.includes(p.id);
             const canPlace = state.g1Placements.length < 3;
+            const placement = state.g1Placements.indexOf(p.id);
             return (
               <Button
                 key={p.id}
@@ -70,19 +72,30 @@ export function PatternBreaker({ state, dispatch }: { state: AppState; dispatch:
                 size="default"
               >
                 {p.name}
-                {alreadyPlaced && <span className="ml-1 text-xs opacity-75">({placementLabels[state.g1Placements.indexOf(p.id)]})</span>}
+                {alreadyPlaced && <span className="ml-1 text-xs opacity-75">({placementLabels[placement]})</span>}
               </Button>
             );
           })}
         </div>
 
         <div className="flex gap-2 justify-center flex-wrap">
-          {state.players.map((p) => (
-            <Button key={`w-${p.id}`} variant="destructive" size="sm" onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: -2 })}>
-              <img src={emotionalDamage} alt="" className="h-6 w-auto rounded-sm object-cover" />
-              <XCircle size={14} /> {p.name} -2
-            </Button>
-          ))}
+          {state.players.map((p) => {
+            const wrongKey = getWrongKey(p.id);
+            const wrongUsed = state.usedAwardKeys.includes(wrongKey);
+            const alreadyPlaced = state.g1Placements.includes(p.id);
+            return (
+              <Button
+                key={`w-${p.id}`}
+                variant="destructive"
+                size="sm"
+                disabled={wrongUsed || alreadyPlaced}
+                onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: -2, awardKey: wrongKey })}
+              >
+                <img src={emotionalDamage} alt="" className="h-6 w-auto rounded-sm object-cover" />
+                <XCircle size={14} /> {wrongUsed ? `${p.name} Penalized` : `${p.name} -2`}
+              </Button>
+            );
+          })}
         </div>
 
         <div className="flex justify-center pt-2">

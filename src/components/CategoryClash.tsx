@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ChevronRight, Play, Square, Calculator } from 'lucide-react';
+import { ChevronRight, Play, Square, Calculator, Pencil, Trash2, Check, X } from 'lucide-react';
 import timerPanic from '../assets/stickers/timer-panic.png';
 import sweatingPanic from '../assets/memes/sweating-panic.jpg';
 
@@ -14,7 +14,10 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
   const [timeLeft, setTimeLeft] = useState(30);
   const [inputPlayer, setInputPlayer] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState('');
+  const [editingAnswer, setEditingAnswer] = useState<{ playerId: number; answerIndex: number } | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const scoreKey = `g2-r${state.currentRound}-score`;
+  const hasScored = state.usedAwardKeys.includes(scoreKey);
 
   useEffect(() => {
     if (state.g2TimerActive && timeLeft > 0) {
@@ -23,7 +26,12 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
     }
   }, [state.g2TimerActive, timeLeft]);
 
-  useEffect(() => { setTimeLeft(30); }, [state.currentRound]);
+  useEffect(() => {
+    setTimeLeft(30);
+    setInputPlayer(null);
+    setInputValue('');
+    setEditingAnswer(null);
+  }, [state.currentRound]);
 
   if (!round) {
     return (
@@ -40,9 +48,27 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
   });
   const answerCounts: Record<string, number> = {};
   allAnswersFlat.forEach(({ normalized }) => { answerCounts[normalized] = (answerCounts[normalized] || 0) + 1; });
+  const totalAnswers = allAnswersFlat.length;
 
-  const addAnswer = () => {
-    if (inputPlayer !== null && inputValue.trim()) {
+  const resetComposer = () => {
+    setInputValue('');
+    setEditingAnswer(null);
+  };
+
+  const submitAnswer = () => {
+    if (inputPlayer !== null && inputValue.trim() && !hasScored) {
+      if (editingAnswer) {
+        dispatch({
+          type: 'G2_EDIT_ANSWER',
+          fromPlayerId: editingAnswer.playerId,
+          answerIndex: editingAnswer.answerIndex,
+          nextPlayerId: inputPlayer,
+          nextAnswer: inputValue,
+        });
+        resetComposer();
+        return;
+      }
+
       const answers = inputValue
         .split(';')
         .map((answer) => answer.trim())
@@ -53,6 +79,21 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
       });
 
       setInputValue('');
+    }
+  };
+
+  const startEditing = (playerId: number, answerIndex: number, answer: string) => {
+    if (hasScored) return;
+    setEditingAnswer({ playerId, answerIndex });
+    setInputPlayer(playerId);
+    setInputValue(answer);
+  };
+
+  const removeAnswer = (playerId: number, answerIndex: number) => {
+    if (hasScored) return;
+    dispatch({ type: 'G2_REMOVE_ANSWER', playerId, answerIndex });
+    if (editingAnswer?.playerId === playerId && editingAnswer.answerIndex === answerIndex) {
+      resetComposer();
     }
   };
 
@@ -103,39 +144,83 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
         <div className="w-full max-w-3xl mb-6">
           <div className="flex gap-1.5 justify-center flex-wrap mb-3">
             {state.players.map((p) => (
-              <Button key={p.id} onClick={() => setInputPlayer(p.id)} variant={inputPlayer === p.id ? 'default' : 'outline'} size="sm">
+              <Button key={p.id} onClick={() => setInputPlayer(p.id)} variant={inputPlayer === p.id ? 'default' : 'outline'} size="sm" disabled={hasScored}>
                 {p.name}
+                {(state.g2Answers[p.id] || []).length > 0 && <span className="text-[10px] opacity-70">({(state.g2Answers[p.id] || []).length})</span>}
               </Button>
             ))}
           </div>
           {inputPlayer !== null && (
-            <div className="flex flex-col items-center gap-2">
-              <div className="flex gap-2 justify-center w-full">
-                <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addAnswer()} placeholder="Type one or many: apple; apricot; avocado" className="max-w-[420px] bg-card" />
-                <Button onClick={addAnswer} size="default">Add</Button>
+            <div className="rounded-2xl border border-border bg-card/70 p-4 shadow-sm">
+              <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{editingAnswer ? 'Edit answer' : 'Quick add answers'}</p>
+                  <p className="text-xs text-muted-foreground">Selected player: {state.players.find((p) => p.id === inputPlayer)?.name}</p>
+                </div>
+                {editingAnswer && (
+                  <Badge variant="warning">Editing existing answer</Badge>
+                )}
               </div>
-              <p className="text-xs text-muted-foreground">Use <span className="font-mono">;</span> to add multiple answers at once.</p>
+              <div className="flex gap-2 justify-center w-full flex-wrap">
+                <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submitAnswer()} placeholder="Type one or many: apple; apricot; avocado" className="max-w-[420px] bg-card" disabled={hasScored} />
+                <Button onClick={submitAnswer} size="default" disabled={hasScored || !inputValue.trim()}>
+                  {editingAnswer ? <Check size={16} /> : null}
+                  {editingAnswer ? 'Save' : 'Add'}
+                </Button>
+                {editingAnswer && (
+                  <Button variant="outline" onClick={resetComposer} size="default">
+                    <X size={16} /> Cancel
+                  </Button>
+                )}
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">Use <span className="font-mono">;</span> to add multiple answers at once. You can fix player mistakes or typos below before scoring.</p>
             </div>
           )}
         </div>
       )}
 
-      {/* Results */}
-      {state.g2TimerEnded && (
+      {(state.g2TimerActive || state.g2TimerEnded) && (
         <div className="w-full max-w-4xl">
+          <div className="mb-3 flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h3 className="text-lg font-bold text-foreground">Review answers</h3>
+              <p className="text-sm text-muted-foreground">Edit, move, or remove anything before points are calculated.</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">{totalAnswers} answers</Badge>
+              {hasScored && <Badge variant="success">Scores locked in</Badge>}
+            </div>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
             {state.players.map((p) => {
               const answers = state.g2Answers[p.id] || [];
+              const uniqueCount = answers.filter((a) => answerCounts[a.toLowerCase().trim()] === 1).length;
               return (
                 <Card key={p.id} className="bg-muted/20">
                   <CardContent className="p-4">
-                    <h4 className="font-bold text-sm mb-2 text-muted-foreground">{p.name}</h4>
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <h4 className="font-bold text-sm text-muted-foreground">{p.name}</h4>
+                      <span className="text-[11px] text-muted-foreground">{uniqueCount} unique</span>
+                    </div>
                     <div className="space-y-1">
+                      {answers.length === 0 && <p className="text-xs text-muted-foreground">No answers yet</p>}
                       {answers.map((a, i) => {
                         const isDuplicate = answerCounts[a.toLowerCase().trim()] > 1;
                         return (
-                          <div key={i} className={'text-xs px-2 py-0.5 rounded ' + (isDuplicate ? 'text-red-600 line-through bg-red-500/10' : 'text-secondary bg-secondary/10')}>
-                            {a}
+                          <div key={i} className={'flex items-center justify-between gap-2 rounded-md px-2 py-1 text-xs ' + (isDuplicate ? 'bg-red-500/10 text-red-600' : 'bg-secondary/10 text-secondary')}>
+                            <span className={isDuplicate ? 'line-through' : ''}>{a}</span>
+                            <div className="flex items-center gap-1">
+                              {!hasScored && (
+                                <>
+                                  <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px]" onClick={() => startEditing(p.id, i, a)}>
+                                    <Pencil size={12} /> Edit
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] text-destructive" onClick={() => removeAnswer(p.id, i)}>
+                                    <Trash2 size={12} /> Remove
+                                  </Button>
+                                </>
+                              )}
+                            </div>
                           </div>
                         );
                       })}
@@ -145,10 +230,14 @@ export function CategoryClash({ state, dispatch }: { state: AppState; dispatch: 
               );
             })}
           </div>
-          <div className="flex gap-3 justify-center">
-            <Button variant="success" onClick={() => dispatch({ type: 'G2_SCORE' })}><Calculator size={16} /> Calculate Scores</Button>
-            <Button variant="ghost" onClick={() => dispatch({ type: 'NEXT_ROUND' })}>Next Round <ChevronRight size={16} /></Button>
-          </div>
+          {state.g2TimerEnded && (
+            <div className="flex gap-3 justify-center">
+              <Button variant="success" onClick={() => dispatch({ type: 'G2_SCORE' })} disabled={hasScored || totalAnswers === 0}>
+                <Calculator size={16} /> {hasScored ? 'Scores Added' : 'Calculate Scores'}
+              </Button>
+              <Button variant="ghost" onClick={() => dispatch({ type: 'NEXT_ROUND' })}>Next Round <ChevronRight size={16} /></Button>
+            </div>
+          )}
         </div>
       )}
     </div>

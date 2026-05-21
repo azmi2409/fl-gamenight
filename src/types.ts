@@ -28,6 +28,7 @@ export interface AppState {
   currentRound: number;
   answerRevealed: boolean;
   scoreEvents: ScoreEvent[];
+  usedAwardKeys: string[];
   transitionTarget: Screen | null;
   // Game 2 specific
   g2Answers: Record<number, string[]>;
@@ -45,12 +46,14 @@ export type Action =
   | { type: 'START_GAME' }
   | { type: 'NEXT_ROUND' }
   | { type: 'REVEAL_ANSWER' }
-  | { type: 'AWARD_POINTS'; playerId: number; points: number }
+  | { type: 'AWARD_POINTS'; playerId: number; points: number; awardKey?: string }
   | { type: 'NEXT_GAME' }
   | { type: 'TRANSITION_DONE' }
   | { type: 'RESET' }
   | { type: 'G1_PLACE'; playerId: number }
   | { type: 'G2_ADD_ANSWER'; playerId: number; answer: string }
+  | { type: 'G2_EDIT_ANSWER'; fromPlayerId: number; answerIndex: number; nextPlayerId: number; nextAnswer: string }
+  | { type: 'G2_REMOVE_ANSWER'; playerId: number; answerIndex: number }
   | { type: 'G2_START_TIMER' }
   | { type: 'G2_END_TIMER' }
   | { type: 'G2_SCORE' }

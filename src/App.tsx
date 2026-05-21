@@ -21,6 +21,7 @@ const initialState: AppState = {
   currentRound: 0,
   answerRevealed: false,
   scoreEvents: [],
+  usedAwardKeys: [],
   transitionTarget: null,
   g2Answers: {},
   g2TimerActive: false,
@@ -41,6 +42,7 @@ function loadState(): AppState {
       }
       parsed.g2TimerActive = false;
       parsed.scoreEvents = [];
+      parsed.usedAwardKeys = parsed.usedAwardKeys || [];
       return parsed;
     }
   } catch { /* ignore */ }
@@ -51,6 +53,11 @@ function saveState(state: AppState) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch { /* ignore */ }
+}
+
+function appendAwardKey(state: AppState, awardKey?: string) {
+  if (!awardKey || state.usedAwardKeys.includes(awardKey)) return state.usedAwardKeys;
+  return [...state.usedAwardKeys, awardKey];
 }
 
 const nextScreen: Record<string, AppState['screen']> = {
@@ -64,20 +71,26 @@ const nextScreen: Record<string, AppState['screen']> = {
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_PLAYERS':
-      return { ...state, players: action.names.map((name, i) => ({ id: i, name, score: 0, streak: 0 })) };
+      return { ...state, players: action.names.map((name, i) => ({ id: i, name, score: 0, streak: 0 })), usedAwardKeys: [] };
     case 'START_GAME':
-      return { ...state, screen: 'transition', transitionTarget: 'game1', currentRound: 0, answerRevealed: false };
+      return { ...state, screen: 'transition', transitionTarget: 'game1', currentRound: 0, answerRevealed: false, usedAwardKeys: [] };
     case 'NEXT_ROUND':
-      return { ...state, currentRound: state.currentRound + 1, answerRevealed: false, g1Placements: [], g2Answers: {}, g2TimerActive: false, g2TimerEnded: false, g5GridVisible: true, g5QuestionIndex: 0 };
+      return { ...state, currentRound: state.currentRound + 1, answerRevealed: false, usedAwardKeys: [], g1Placements: [], g2Answers: {}, g2TimerActive: false, g2TimerEnded: false, g5GridVisible: true, g5QuestionIndex: 0 };
     case 'REVEAL_ANSWER':
       return { ...state, answerRevealed: true };
     case 'AWARD_POINTS': {
+      if (action.awardKey && state.usedAwardKeys.includes(action.awardKey)) return state;
       const evt = { id: `${Date.now()}-${action.playerId}`, playerId: action.playerId, delta: action.points, timestamp: Date.now() };
-      return { ...state, players: state.players.map((p) => p.id === action.playerId ? { ...p, score: p.score + action.points } : p), scoreEvents: [...state.scoreEvents, evt] };
+      return {
+        ...state,
+        usedAwardKeys: appendAwardKey(state, action.awardKey),
+        players: state.players.map((p) => p.id === action.playerId ? { ...p, score: p.score + action.points } : p),
+        scoreEvents: [...state.scoreEvents, evt],
+      };
     }
     case 'NEXT_GAME': {
       const target = nextScreen[state.screen] || 'results';
-      return { ...state, screen: 'transition', transitionTarget: target, currentRound: 0, answerRevealed: false, g1Placements: [], g2Answers: {}, g2TimerActive: false, g2TimerEnded: false, g5GridVisible: true, g5QuestionIndex: 0 };
+      return { ...state, screen: 'transition', transitionTarget: target, currentRound: 0, answerRevealed: false, usedAwardKeys: [], g1Placements: [], g2Answers: {}, g2TimerActive: false, g2TimerEnded: false, g5GridVisible: true, g5QuestionIndex: 0 };
     }
     case 'TRANSITION_DONE':
       return { ...state, screen: state.transitionTarget || 'results', transitionTarget: null };
@@ -86,18 +99,58 @@ function reducer(state: AppState, action: Action): AppState {
       return initialState;
     }
     case 'G1_PLACE': {
+      if (state.g1Placements.includes(action.playerId) || state.g1Placements.length >= 3) return state;
       const placement = state.g1Placements.length;
       const pts = placement === 0 ? 5 : placement === 1 ? 3 : 1;
+      const awardKey = `g1-r${state.currentRound}-place-${placement}-${action.playerId}`;
+      if (state.usedAwardKeys.includes(awardKey)) return state;
       const evt = { id: `${Date.now()}-${action.playerId}`, playerId: action.playerId, delta: pts, timestamp: Date.now() };
-      return { ...state, g1Placements: [...state.g1Placements, action.playerId], players: state.players.map((p) => p.id === action.playerId ? { ...p, score: p.score + pts } : p), scoreEvents: [...state.scoreEvents, evt] };
+      return {
+        ...state,
+        usedAwardKeys: [...state.usedAwardKeys, awardKey],
+        g1Placements: [...state.g1Placements, action.playerId],
+        players: state.players.map((p) => p.id === action.playerId ? { ...p, score: p.score + pts } : p),
+        scoreEvents: [...state.scoreEvents, evt],
+      };
     }
     case 'G2_ADD_ANSWER':
       return { ...state, g2Answers: { ...state.g2Answers, [action.playerId]: [...(state.g2Answers[action.playerId] || []), action.answer] } };
+    case 'G2_EDIT_ANSWER': {
+      const fromAnswers = [...(state.g2Answers[action.fromPlayerId] || [])];
+      const [current] = fromAnswers.splice(action.answerIndex, 1);
+      if (current === undefined) return state;
+      const nextAnswer = action.nextAnswer.trim();
+      const nextAnswers = action.nextPlayerId === action.fromPlayerId
+        ? [...fromAnswers]
+        : [...(state.g2Answers[action.nextPlayerId] || [])];
+      if (nextAnswer) {
+        if (action.nextPlayerId === action.fromPlayerId) {
+          nextAnswers.splice(action.answerIndex, 0, nextAnswer);
+        } else {
+          nextAnswers.push(nextAnswer);
+        }
+      }
+      return {
+        ...state,
+        g2Answers: {
+          ...state.g2Answers,
+          [action.fromPlayerId]: action.nextPlayerId === action.fromPlayerId ? nextAnswers : fromAnswers,
+          [action.nextPlayerId]: nextAnswers,
+        },
+      };
+    }
+    case 'G2_REMOVE_ANSWER': {
+      const nextAnswers = [...(state.g2Answers[action.playerId] || [])];
+      nextAnswers.splice(action.answerIndex, 1);
+      return { ...state, g2Answers: { ...state.g2Answers, [action.playerId]: nextAnswers } };
+    }
     case 'G2_START_TIMER':
       return { ...state, g2TimerActive: true, g2TimerEnded: false };
     case 'G2_END_TIMER':
       return { ...state, g2TimerActive: false, g2TimerEnded: true };
     case 'G2_SCORE': {
+      const scoreKey = `g2-r${state.currentRound}-score`;
+      if (state.usedAwardKeys.includes(scoreKey)) return state;
       const allAnswers: { playerId: number; answer: string }[] = [];
       Object.entries(state.g2Answers).forEach(([pid, answers]) => { answers.forEach((a) => allAnswers.push({ playerId: Number(pid), answer: a.toLowerCase().trim() })); });
       const answerCounts: Record<string, number> = {};
@@ -113,14 +166,14 @@ function reducer(state: AppState, action: Action): AppState {
         if (pts > 0) events.push({ id: `${Date.now()}-${p.id}`, playerId: p.id, delta: pts, timestamp: Date.now() });
         return { ...p, score: p.score + pts };
       });
-      return { ...state, players: updatedPlayers, scoreEvents: [...state.scoreEvents, ...events] };
+      return { ...state, usedAwardKeys: [...state.usedAwardKeys, scoreKey], players: updatedPlayers, scoreEvents: [...state.scoreEvents, ...events] };
     }
     case 'G5_HIDE_GRID':
       return { ...state, g5GridVisible: false };
     case 'G5_SHOW_GRID':
       return { ...state, g5GridVisible: true };
     case 'G5_NEXT_QUESTION':
-      return { ...state, g5QuestionIndex: state.g5QuestionIndex + 1, answerRevealed: false };
+      return { ...state, g5QuestionIndex: state.g5QuestionIndex + 1, answerRevealed: false, usedAwardKeys: [] };
     default:
       return state;
   }

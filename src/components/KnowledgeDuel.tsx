@@ -25,13 +25,15 @@ export function KnowledgeDuel({ state, dispatch }: { state: AppState; dispatch: 
   }
 
   const config = difficultyConfig[question.difficulty];
+  const awardKey = `g4-r${state.currentRound}-winner`;
+  const hasWinner = state.usedAwardKeys.includes(awardKey);
 
   const handleCorrect = (playerId: number) => {
     const player = state.players.find((p) => p.id === playerId)!;
     let pts = config.points;
     const newStreak = player.streak + 1;
     if (newStreak >= 3 && newStreak % 3 === 0) pts += 3;
-    dispatch({ type: 'AWARD_POINTS', playerId, points: pts });
+    dispatch({ type: 'AWARD_POINTS', playerId, points: pts, awardKey });
   };
 
   return (
@@ -67,7 +69,7 @@ export function KnowledgeDuel({ state, dispatch }: { state: AppState; dispatch: 
         <p className="text-center text-xs text-muted-foreground">Click the player who answered correctly first</p>
         <div className="flex gap-2 justify-center flex-wrap">
           {state.players.map((p) => (
-            <Button key={p.id} variant="outline" size="default" onClick={() => handleCorrect(p.id)}>
+            <Button key={p.id} variant="outline" size="default" disabled={hasWinner} onClick={() => handleCorrect(p.id)}>
               {p.name} {p.streak >= 2 && <span className="text-amber-600 flex items-center gap-0.5"><Flame size={12} />{p.streak}</span>}
             </Button>
           ))}

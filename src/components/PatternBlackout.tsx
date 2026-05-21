@@ -27,6 +27,9 @@ export function PatternBlackout({ state, dispatch }: { state: AppState; dispatch
   }
 
   const question = round.questions[state.g5QuestionIndex];
+  const fastAwardKey = `g5-r${state.currentRound}-q${state.g5QuestionIndex}-fast`;
+  const hasFastWinner = state.usedAwardKeys.includes(fastAwardKey);
+  const getCorrectKey = (playerId: number) => `g5-r${state.currentRound}-q${state.g5QuestionIndex}-correct-${playerId}`;
 
   return (
     <div className="flex flex-col items-center px-6 py-8 animate-reveal">
@@ -88,18 +91,23 @@ export function PatternBlackout({ state, dispatch }: { state: AppState; dispatch
           <div className="w-full max-w-3xl space-y-3">
             <p className="text-center text-xs text-muted-foreground">Correct = +4 (doubled) · Fastest = +2 bonus</p>
             <div className="flex gap-2 justify-center flex-wrap">
-              {state.players.map((p) => (
-                <Button key={p.id} variant="outline" size="default" onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: 4 })}>
-                  {p.name} +4
-                </Button>
-              ))}
+              {state.players.map((p) => {
+                const used = state.usedAwardKeys.includes(getCorrectKey(p.id));
+                return (
+                  <Button key={p.id} variant="outline" size="default" disabled={used} onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: 4, awardKey: getCorrectKey(p.id) })}>
+                    {used ? `${p.name} Added` : `${p.name} +4`}
+                  </Button>
+                );
+              })}
             </div>
             <div className="flex gap-2 justify-center flex-wrap">
-              {state.players.map((p) => (
-                <Button key={`b-${p.id}`} variant="ghost" size="sm" onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: 2 })} className="text-primary">
-                  {p.name} Fast (+2)
-                </Button>
-              ))}
+              {state.players.map((p) => {
+                return (
+                  <Button key={`b-${p.id}`} variant="ghost" size="sm" disabled={hasFastWinner} onClick={() => dispatch({ type: 'AWARD_POINTS', playerId: p.id, points: 2, awardKey: fastAwardKey })} className="text-primary">
+                    {hasFastWinner ? `${p.name} Fast Locked` : `${p.name} Fast (+2)`}
+                  </Button>
+                );
+              })}
             </div>
             <div className="flex justify-center pt-2">
               {state.g5QuestionIndex < round.questions.length - 1 ? (
